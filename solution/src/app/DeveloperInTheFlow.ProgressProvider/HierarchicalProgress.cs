@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Threading;
 
     /// <summary>
     ///     Provides a hierarchical IProgress{T} that invokes callbacks for each reported progress value and a final callback for when it is disposed.
@@ -10,6 +11,12 @@
                                         IHierarchicalProgress<IProgressReport>
     {
         #region Fields
+
+        /// <summary>
+        ///     The <see cref="CancellationTokenSource"/> for this progress operation. 
+        ///     Clients can pass this value to the related operation in progress in order to monitor when the user has cancelled the operation.
+        /// </summary>
+        private readonly Lazy<CancellationTokenSource> cancellationTokenSource = new Lazy<CancellationTokenSource>(true);
 
         /// <summary>
         ///     The handler which will get called when the object is disposed.
@@ -41,6 +48,22 @@
         {
             this.progress = new Progress<IProgressReport>(value => reportHandler(this, value));
             this.disposeHandler = disposeHandler;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets the <see cref="System.Threading.CancellationTokenSource"/> for this progress operation. 
+        ///     Clients can pass this value to the related operation in progress in order to monitor when the user has cancelled the operation.
+        /// </summary>
+        public CancellationTokenSource CancellationTokenSource
+        {
+            get
+            {
+                return this.cancellationTokenSource.Value;
+            }
         }
 
         #endregion

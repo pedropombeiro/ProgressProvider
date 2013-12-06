@@ -1,6 +1,7 @@
 ﻿namespace DeveloperInTheFlow.ProgressProvider
 {
     using System;
+    using System.Threading;
 
     /// <summary>
     ///   Defines the contract for the model representing a long-running operation supporting hierarchy.
@@ -12,6 +13,16 @@
     public interface IHierarchicalProgress<in T> : IProgress<T>, 
                                                    IDisposable
     {
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets the <see cref="System.Threading.CancellationTokenSource"/> for this progress operation. 
+        ///     Clients can pass this value to the related operation in progress in order to monitor when the user has cancelled the operation.
+        /// </summary>
+        CancellationTokenSource CancellationTokenSource { get; }
+
+        #endregion
+
         #region Public Methods and Operators
 
         /// <summary>
