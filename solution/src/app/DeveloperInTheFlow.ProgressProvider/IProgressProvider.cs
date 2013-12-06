@@ -14,6 +14,11 @@
         #region Public Properties
 
         /// <summary>
+        ///     Gets the active child progress operations.
+        /// </summary>
+        IHierarchicalProgress<IProgressReport>[] ActiveChildProgressOperations { get; }
+
+        /// <summary>
         ///     Gets a value indicating whether an operation is in progress (e.g. to determine if a progress bar should be shown).
         /// </summary>
         bool IsOperationInProgress { get; }
