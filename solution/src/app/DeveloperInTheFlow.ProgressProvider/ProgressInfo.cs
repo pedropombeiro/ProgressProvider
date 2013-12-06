@@ -1,5 +1,7 @@
 ﻿namespace DeveloperInTheFlow.ProgressProvider
 {
+    using System.Linq;
+
     /// <summary>
     ///     Represents additional information about a <see cref="HierarchicalProgress"/> instance.
     /// </summary>

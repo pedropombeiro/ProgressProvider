@@ -162,9 +162,20 @@
         /// <param name="value">
         ///     The new value.
         /// </param>
-        protected void OnReport(IProgress<IProgressReport> sender, 
-                                IProgressReport value)
+        protected void OnReport(
+            IProgress<IProgressReport> sender, 
+            IProgressReport value)
         {
+            if (sender == null)
+            {
+                throw new ArgumentNullException("sender");
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+
             ProgressInfo childProgressInfo;
 
             // The OnReport method is called from the message queue. It is possible that the progress operation has already been unregistered.
@@ -202,8 +213,9 @@
         /// <returns>
         ///     <see langword="true"/> in case the <paramref name="childProgress"/> is known.
         /// </returns>
-        protected bool TryGetOperationInfo(IProgress<IProgressReport> childProgress, 
-                                           out ProgressInfo info)
+        protected bool TryGetOperationInfo(
+            IProgress<IProgressReport> childProgress, 
+            out ProgressInfo info)
         {
             info = this.childProgressInfos.FirstOrDefault(o => object.ReferenceEquals(childProgress, o.Progress));
 

@@ -6,9 +6,6 @@
     /// <summary>
     ///     Provides a hierarchical IProgress{T} that invokes callbacks for each reported progress value and a final callback for when it is disposed.
     /// </summary>
-    /// <remarks>
-    /// TODO : [lmbpop0 02.12.13 15:16] Test this.
-    /// </remarks>
     public class HierarchicalProgress : HierarchicalProgressBase, 
                                         IHierarchicalProgress<IProgressReport>
     {
@@ -37,12 +34,36 @@
         /// <param name="disposeHandler">
         ///     The handler which will get called when the object is disposed.
         /// </param>
-        public HierarchicalProgress(Action<IProgress<IProgressReport>, IProgressReport> reportHandler, 
-                                    Action<IProgress<IProgressReport>> disposeHandler)
+        public HierarchicalProgress(
+            Action<IProgress<IProgressReport>, IProgressReport> reportHandler, 
+            Action<IProgress<IProgressReport>> disposeHandler)
             : base(true)
         {
             this.progress = new Progress<IProgressReport>(value => reportHandler(this, value));
             this.disposeHandler = disposeHandler;
+        }
+
+        #endregion
+
+        #region Explicit Interface Methods
+
+        /// <summary>
+        /// Reports a progress update.
+        /// </summary>
+        /// <param name="value">The value of the updated progress.</param>
+        void IProgress<IProgressReport>.Report(IProgressReport value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+
+            if (value.ProgressValue.HasValue && this.ActiveChildProgressInfos.Any())
+            {
+                throw new NotSupportedException();
+            }
+
+            this.progress.Report(value);
         }
 
         #endregion
@@ -77,20 +98,6 @@
                 // Propagate the new aggregate to the parent progress
                 this.progress.Report(status);
             }
-        }
-
-        /// <summary>
-        /// Reports a progress update.
-        /// </summary>
-        /// <param name="value">The value of the updated progress.</param>
-        void IProgress<IProgressReport>.Report(IProgressReport value)
-        {
-            if (value.ProgressValue.HasValue && this.ActiveChildProgressInfos.Any())
-            {
-                throw new NotSupportedException();
-            }
-
-            this.progress.Report(value);
         }
 
         #endregion
