@@ -43,6 +43,7 @@ Generated_Code/
 solution/packages/*/
 solution/**/packages/**/
 !packages/repositories.config
+*.nupkg
 
 *.suo
 *.svclog

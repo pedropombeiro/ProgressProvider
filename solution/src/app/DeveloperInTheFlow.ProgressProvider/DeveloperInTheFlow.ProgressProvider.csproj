@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="DeveloperInTheFlow.ProgressProvider.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
