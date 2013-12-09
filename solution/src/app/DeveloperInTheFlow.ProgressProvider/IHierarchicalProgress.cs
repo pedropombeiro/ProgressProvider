@@ -36,6 +36,11 @@
         /// </returns>
         IHierarchicalProgress<T> CreateProgress(bool blocksUi);
 
+        /// <summary>
+        ///     Reports the progress operation as completed (making it count as 100% progress value).
+        /// </summary>
+        void ReportCompleted();
+
         #endregion
     }
 }

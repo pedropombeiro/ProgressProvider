@@ -19,9 +19,9 @@
         private readonly Lazy<CancellationTokenSource> cancellationTokenSource = new Lazy<CancellationTokenSource>(true);
 
         /// <summary>
-        ///     The handler which will get called when the object is disposed.
+        ///     The handler which will get called when the object is marked as completed.
         /// </summary>
-        private readonly Action<IProgress<IProgressReport>> disposeHandler;
+        private readonly Action<IProgress<IProgressReport>> reportCompletedHandler;
 
         /// <summary>
         ///     The underlying progress object which will handle progress reporting.
@@ -43,16 +43,16 @@
         /// <param name="reportHandler">
         ///     The handler which will get called for each reported value.
         /// </param>
-        /// <param name="disposeHandler">
-        ///     The handler which will get called when the object is disposed.
+        /// <param name="reportCompletedHandler">
+        ///     The handler which will get called when the object is marked as completed.
         /// </param>
         public HierarchicalProgress(
             Action<IProgress<IProgressReport>, IProgressReport> reportHandler, 
-            Action<IProgress<IProgressReport>> disposeHandler)
+            Action<IProgress<IProgressReport>> reportCompletedHandler)
             : base(true)
         {
             this.progress = new Progress<IProgressReport>(value => reportHandler(this, value));
-            this.disposeHandler = disposeHandler;
+            this.reportCompletedHandler = reportCompletedHandler;
         }
 
         #endregion
@@ -69,6 +69,14 @@
             {
                 return this.cancellationTokenSource.Value;
             }
+        }
+
+        /// <summary>
+        ///     Reports the progress operation as completed (making it count as 100% progress value).
+        /// </summary>
+        public void ReportCompleted()
+        {
+            this.reportCompletedHandler(this);
         }
 
         #endregion
@@ -118,8 +126,9 @@
         {
             if (disposing)
             {
+                this.ReportCompleted();
+
                 // Dispose of managed resources
-                this.disposeHandler(this);
             }
 
             // Dispose of native resources
