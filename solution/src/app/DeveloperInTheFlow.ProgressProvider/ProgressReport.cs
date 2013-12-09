@@ -32,6 +32,17 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProgressReport"/> class.
         /// </summary>
+        /// <param name="state">
+        ///     The state of the long-running operation.
+        /// </param>
+        public ProgressReport(ProgressState state)
+            : this(string.Empty, state)
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ProgressReport"/> class.
+        /// </summary>
         /// <param name="message">
         ///     The message describing the status of the long-running operation.
         /// </param>

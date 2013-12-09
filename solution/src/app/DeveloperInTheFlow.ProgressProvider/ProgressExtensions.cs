@@ -97,6 +97,17 @@
             progress.Report(new ProgressReport(message, state));
         }
 
+        /// <summary>
+        ///     Reports a change in the progress state to the error state.
+        /// </summary>
+        /// <param name="progress">
+        ///     The object being extended.
+        /// </param>
+        public static void ReportError(this IProgress<IProgressReport> progress)
+        {
+            progress.Report(new ProgressReport(ProgressState.Error));
+        }
+
         #endregion
     }
 }

@@ -28,6 +28,11 @@
         /// </summary>
         private readonly IProgress<IProgressReport> progress;
 
+        /// <summary>
+        ///     The last progress reported through <see cref="IProgress{T}.Report"/>.
+        /// </summary>
+        private IProgressReport lastProgressReport;
+
         #endregion
 
         #region Constructors and Destructors
@@ -71,7 +76,7 @@
         #region Explicit Interface Methods
 
         /// <summary>
-        /// Reports a progress update.
+        ///     Reports a progress update.
         /// </summary>
         /// <param name="value">The value of the updated progress.</param>
         void IProgress<IProgressReport>.Report(IProgressReport value)
@@ -81,11 +86,23 @@
                 throw new ArgumentNullException("value");
             }
 
+            // If the status changed to ProgressState.Error and it is missing a progress value, then we take the progress value from the current state.
+            if (value.State == ProgressState.Error && !value.ProgressValue.HasValue &&
+                this.lastProgressReport != null && this.lastProgressReport.ProgressValue.HasValue)
+            {
+                var message = string.IsNullOrEmpty(value.Message)
+                                  ? this.lastProgressReport.Message
+                                  : value.Message;
+
+                value = new ProgressReport(message, this.lastProgressReport.ProgressValue.Value, this.lastProgressReport.ProgressMaximumValue, value.State);
+            }
+
             if (value.ProgressValue.HasValue && this.ActiveChildProgressInfos.Any())
             {
                 throw new NotSupportedException();
             }
 
+            this.lastProgressReport = value;
             this.progress.Report(value);
         }
 
