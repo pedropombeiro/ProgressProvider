@@ -9,7 +9,8 @@
     /// <typeparam name="T">
     ///     The type of progress update value.
     /// </typeparam>
-    public interface IProgressProvider<T> : INotifyPropertyChanged
+    public interface IProgressProvider<T> : INotifyPropertyChanged, 
+                                            IDisposable
     {
         #region Public Properties
 

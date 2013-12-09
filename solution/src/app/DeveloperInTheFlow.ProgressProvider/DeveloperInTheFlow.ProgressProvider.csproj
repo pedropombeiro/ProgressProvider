@@ -36,7 +36,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <None Include="DeveloperInTheFlow.ProgressProvider.nuspec" />
+    <None Include="DeveloperInTheFlow.ProgressProvider.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +50,7 @@
     <Compile Include="Progress.cs" />
     <Compile Include="ProgressExtensions.cs" />
     <Compile Include="ProgressInfo.cs" />
+    <Compile Include="ProgressProviderBase.cs" />
     <Compile Include="ProgressReport.cs" />
     <Compile Include="ProgressState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
