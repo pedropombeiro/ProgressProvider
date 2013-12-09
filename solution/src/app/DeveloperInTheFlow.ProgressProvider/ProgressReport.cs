@@ -119,7 +119,7 @@
         public double ProgressMaximumValue { get; private set; }
 
         /// <summary>
-        ///     Gets the current progress value from [0, 1]. <see langword="null"/> if the <see cref="IProgressReport.State"/> is <see cref="ProgressState.Indeterminate"/>.
+        ///     Gets the current progress value from [0, <see cref="ProgressMaximumValue"/>]. <see langword="null"/> if the <see cref="IProgressReport.State"/> is <see cref="ProgressState.Indeterminate"/>.
         /// </summary>
         public double? ProgressValue { get; private set; }
 

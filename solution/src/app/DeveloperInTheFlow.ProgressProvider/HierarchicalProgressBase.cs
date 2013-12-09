@@ -72,9 +72,9 @@
         public virtual IHierarchicalProgress<IProgressReport> CreateProgress(bool blocksUi)
         {
             var childProgress = new HierarchicalProgress(this.OnReport, this.UnregisterProgress);
-            var operationInfo = new ProgressInfo(childProgress, blocksUi);
-            this.childProgressInfos.Add(operationInfo);
-            this.activeChildProgressInfos.Add(operationInfo);
+            var progressInfo = new ProgressInfo(childProgress, blocksUi);
+            this.childProgressInfos.Add(progressInfo);
+            this.activeChildProgressInfos.Add(progressInfo);
             return childProgress;
         }
 
