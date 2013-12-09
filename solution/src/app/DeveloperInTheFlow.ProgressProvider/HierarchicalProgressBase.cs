@@ -231,20 +231,18 @@
         private void UnregisterProgress(IProgress<IProgressReport> childProgress)
         {
             ProgressInfo childProgressInfo;
-            if (!this.TryGetOperationInfo(childProgress, out childProgressInfo))
+            if (this.TryGetOperationInfo(childProgress, out childProgressInfo))
             {
-                throw new ArgumentException(@"Unknown operation!", "childProgress");
+                this.activeChildProgressInfos.Remove(childProgressInfo);
+
+                if (!this.activeChildProgressInfos.Any())
+                {
+                    // If this was the last active progress, then we can clear all the operations we've been tracking.
+                    this.childProgressInfos.Clear();
+                }
+
+                this.OnStatusChanged();
             }
-
-            this.activeChildProgressInfos.Remove(childProgressInfo);
-
-            if (!this.activeChildProgressInfos.Any())
-            {
-                // If this was the last active progress, then we can clear all the operations we've been tracking.
-                this.childProgressInfos.Clear();
-            }
-
-            this.OnStatusChanged();
         }
 
         #endregion
