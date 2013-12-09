@@ -19,14 +19,14 @@
         private readonly Lazy<CancellationTokenSource> cancellationTokenSource = new Lazy<CancellationTokenSource>(true);
 
         /// <summary>
-        ///     The handler which will get called when the object is marked as completed.
-        /// </summary>
-        private readonly Action<IProgress<IProgressReport>> reportCompletedHandler;
-
-        /// <summary>
         ///     The underlying progress object which will handle progress reporting.
         /// </summary>
         private readonly IProgress<IProgressReport> progress;
+
+        /// <summary>
+        ///     The handler which will get called when the object is marked as completed.
+        /// </summary>
+        private readonly Action<IProgress<IProgressReport>> reportCompletedHandler;
 
         /// <summary>
         ///     The last progress reported through <see cref="IProgress{T}.Report"/>.
@@ -70,6 +70,10 @@
                 return this.cancellationTokenSource.Value;
             }
         }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>
         ///     Reports the progress operation as completed (making it count as 100% progress value).
