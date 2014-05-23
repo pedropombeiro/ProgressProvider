@@ -9,10 +9,10 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Add ReportError extension method and IProgressProvider&lt;T&gt;.ActiveChildProgressOperations property.</releaseNotes>
-    <copyright>Copyright © Pedro Pombeiro 2013</copyright>
+    <copyright>Copyright © Pedro Pombeiro 2013-2014</copyright>
     <tags>IProgress TPL</tags>
     <dependencies>
-      <dependency id="Microsoft.Bcl" version="1.1.6" />
+      <dependency id="Microsoft.Bcl" version="1.1.9" />
     </dependencies>
   </metadata>
 </package>
