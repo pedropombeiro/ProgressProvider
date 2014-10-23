@@ -51,7 +51,7 @@
         ///     The handler which will get called when the object is marked as completed.
         /// </param>
         /// <param name="progressReportFactory">
-        ///     The factory used to create <see cref="IProgressReport{T}"/> instances.
+        ///     The factory used to create <see cref="IProgressReport{TMessage}"/> instances.
         /// </param>
         public HierarchicalProgress(
             Action<IProgress<IProgressReport<TMessage>>, IProgressReport<TMessage>> reportHandler,

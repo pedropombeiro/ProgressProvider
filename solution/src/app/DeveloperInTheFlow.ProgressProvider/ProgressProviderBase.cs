@@ -72,7 +72,7 @@
         #endregion
 
         /// <summary>
-        ///   Wraps a IHierarchicalProgress{IProgressReport{T}} to implement the non generic nested interface.
+        ///   Wraps a IHierarchicalProgress{IProgressReport{TMessage}} to implement the non generic nested interface.
         /// </summary>
         private class HierarchicalProgressWrap : IHierarchicalProgress<IProgressReport>
         {

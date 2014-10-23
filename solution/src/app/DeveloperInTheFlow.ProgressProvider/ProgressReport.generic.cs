@@ -124,12 +124,12 @@
         public TMessage Message { get; private set; }
 
         /// <summary>
-        ///     Gets the maximum progress value. Used when <see cref="IProgressReport.ProgressValue"/> is defined.
+        ///     Gets the maximum progress value. Used when <see cref="IProgressReport{TMessage}.ProgressValue"/> is defined.
         /// </summary>
         public double ProgressMaximumValue { get; private set; }
 
         /// <summary>
-        ///     Gets the current progress value from [0, <see cref="ProgressMaximumValue"/>]. <see langword="null"/> if the <see cref="IProgressReport.State"/> is <see cref="ProgressState.Indeterminate"/>.
+        ///     Gets the current progress value from [0, <see cref="ProgressMaximumValue"/>]. <see langword="null"/> if the <see cref="IProgressReport{TMessage}.State"/> is <see cref="ProgressState.Indeterminate"/>.
         /// </summary>
         public double? ProgressValue { get; private set; }
 

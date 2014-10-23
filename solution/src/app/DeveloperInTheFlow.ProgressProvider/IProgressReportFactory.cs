@@ -1,7 +1,7 @@
 ﻿namespace DeveloperInTheFlow.ProgressProvider
 {
     /// <summary>
-    ///   Defines the contract for the factory responsible for the creation of <see cref="IProgressReport{T}"/>s.
+    ///   Defines the contract for the factory responsible for the creation of <see cref="IProgressReport{TMessage}"/>s.
     /// </summary>
     /// <typeparam name="TMessage">
     ///     The message type.

@@ -23,7 +23,7 @@
         ///     <see langword="true"/> if the <see cref="HierarchicalProgressBase{TMessage}.activeChildProgressInfos"/> list should be kept ordered with the most recently updated child progress on the end of the list.
         /// </param>
         /// <param name="progressReportFactory">
-        ///     The factory used to create <see cref="IProgressReport{T}"/> instances.
+        ///     The factory used to create <see cref="IProgressReport{TMessage}"/> instances.
         /// </param>
         protected ProgressProviderBase(bool keepProgressListOrdered,
                                        IProgressReportFactory<TMessage> progressReportFactory)
