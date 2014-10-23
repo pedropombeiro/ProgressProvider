@@ -110,7 +110,7 @@
             if (value.State == ProgressState.Error && !value.ProgressValue.HasValue &&
                 this.lastProgressReport != null && this.lastProgressReport.ProgressValue.HasValue)
             {
-                var message = this.IsNullOrEmpty(value.Message)
+                var message = MessageHelper<TMessage>.IsNullOrEmpty(value.Message)
                                   ? this.lastProgressReport.Message
                                   : value.Message;
 
@@ -159,27 +159,6 @@
                 // Propagate the new aggregate to the parent progress
                 this.progress.Report(status);
             }
-        }
-
-        /// <summary>
-        ///     Verifies if the <paramref name="message"/> is null or in the case it is a string if it's empty.
-        /// </summary>
-        /// <param name="message">
-        ///     The message to verify if it's null or empty.
-        /// </param>
-        /// <returns>
-        ///     <c>true</c> if <paramref name="message"/> is null, or in the case it is a string is empty, otherwise <c>false</c>.
-        /// </returns>
-        private bool IsNullOrEmpty(TMessage message)
-        {
-            var stringMessage = message as string;
-
-            if (stringMessage != null && string.IsNullOrEmpty(stringMessage))
-            {
-                return true;
-            }
-
-            return message == default(TMessage);
         }
 
         #endregion

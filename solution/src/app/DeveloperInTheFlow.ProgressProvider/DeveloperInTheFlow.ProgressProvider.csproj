@@ -49,6 +49,7 @@
     <Compile Include="IProgressReport.cs" />
     <Compile Include="IProgressReport.generic.cs" />
     <Compile Include="IProgressReportFactory.cs" />
+    <Compile Include="MessageHelper.cs" />
     <Compile Include="Progress.cs" />
     <Compile Include="ProgressExtensions.cs" />
     <Compile Include="ProgressInfo.cs" />
