@@ -7,8 +7,12 @@
     /// <summary>
     ///     Provides a hierarchical IProgress{T} that invokes callbacks for each reported progress value and a final callback for when it is disposed.
     /// </summary>
-    public class HierarchicalProgress : HierarchicalProgressBase, 
-                                        IHierarchicalProgress<IProgressReport>
+    /// <typeparam name="TMessage">
+    ///     The message type.
+    /// </typeparam>
+    public class HierarchicalProgress<TMessage> : HierarchicalProgressBase<TMessage>,
+                                                  IHierarchicalProgress<IProgressReport<TMessage>>
+        where TMessage : class
     {
         #region Fields
 
@@ -21,24 +25,24 @@
         /// <summary>
         ///     The underlying progress object which will handle progress reporting.
         /// </summary>
-        private readonly IProgress<IProgressReport> progress;
+        private readonly IProgress<IProgressReport<TMessage>> progress;
 
         /// <summary>
         ///     The handler which will get called when the object is marked as completed.
         /// </summary>
-        private readonly Action<IProgress<IProgressReport>> reportCompletedHandler;
+        private readonly Action<IProgress<IProgressReport<TMessage>>> reportCompletedHandler;
 
         /// <summary>
         ///     The last progress reported through <see cref="IProgress{T}.Report"/>.
         /// </summary>
-        private IProgressReport lastProgressReport;
+        private IProgressReport<TMessage> lastProgressReport;
 
         #endregion
 
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="HierarchicalProgress"/> class.
+        ///     Initializes a new instance of the <see cref="HierarchicalProgress{TMessage}"/> class.
         /// </summary>
         /// <param name="reportHandler">
         ///     The handler which will get called for each reported value.
@@ -46,12 +50,16 @@
         /// <param name="reportCompletedHandler">
         ///     The handler which will get called when the object is marked as completed.
         /// </param>
+        /// <param name="progressReportFactory">
+        ///     The factory used to create <see cref="IProgressReport{T}"/> instances.
+        /// </param>
         public HierarchicalProgress(
-            Action<IProgress<IProgressReport>, IProgressReport> reportHandler, 
-            Action<IProgress<IProgressReport>> reportCompletedHandler)
-            : base(true)
+            Action<IProgress<IProgressReport<TMessage>>, IProgressReport<TMessage>> reportHandler,
+            Action<IProgress<IProgressReport<TMessage>>> reportCompletedHandler,
+            IProgressReportFactory<TMessage> progressReportFactory)
+            : base(true, progressReportFactory)
         {
-            this.progress = new Progress<IProgressReport>(value => reportHandler(this, value));
+            this.progress = new Progress<IProgressReport<TMessage>>(value => reportHandler(this, value));
             this.reportCompletedHandler = reportCompletedHandler;
         }
 
@@ -91,7 +99,7 @@
         ///     Reports a progress update.
         /// </summary>
         /// <param name="value">The value of the updated progress.</param>
-        void IProgress<IProgressReport>.Report(IProgressReport value)
+        void IProgress<IProgressReport<TMessage>>.Report(IProgressReport<TMessage> value)
         {
             if (value == null)
             {
@@ -102,11 +110,11 @@
             if (value.State == ProgressState.Error && !value.ProgressValue.HasValue &&
                 this.lastProgressReport != null && this.lastProgressReport.ProgressValue.HasValue)
             {
-                var message = string.IsNullOrEmpty(value.Message)
+                var message = this.IsNullOrEmpty(value.Message)
                                   ? this.lastProgressReport.Message
                                   : value.Message;
 
-                value = new ProgressReport(message, this.lastProgressReport.ProgressValue.Value, this.lastProgressReport.ProgressMaximumValue, value.State);
+                value = this.ProgressReportFactory.Create(message, this.lastProgressReport.ProgressValue.Value, this.lastProgressReport.ProgressMaximumValue, value.State);
             }
 
             if (value.ProgressValue.HasValue && this.ActiveChildProgressInfos.Any())
@@ -151,6 +159,27 @@
                 // Propagate the new aggregate to the parent progress
                 this.progress.Report(status);
             }
+        }
+
+        /// <summary>
+        ///     Verifies if the <paramref name="message"/> is null or in the case it is a string if it's empty.
+        /// </summary>
+        /// <param name="message">
+        ///     The message to verify if it's null or empty.
+        /// </param>
+        /// <returns>
+        ///     <c>true</c> if <paramref name="message"/> is null, or in the case it is a string is empty, otherwise <c>false</c>.
+        /// </returns>
+        private bool IsNullOrEmpty(TMessage message)
+        {
+            var stringMessage = message as string;
+
+            if (stringMessage != null && string.IsNullOrEmpty(stringMessage))
+            {
+                return true;
+            }
+
+            return message == default(TMessage);
         }
 
         #endregion
