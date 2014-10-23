@@ -7,19 +7,28 @@
     /// <summary>
     ///     Implements the base functionality of a service which maintains the state for a hierarchical progress operation.
     /// </summary>
-    public abstract class HierarchicalProgressBase : IDisposable
+    /// <typeparam name="TMessage">
+    ///     The message type.
+    /// </typeparam>
+    public abstract class HierarchicalProgressBase<TMessage> : IDisposable
+        where TMessage : class
     {
         #region Fields
 
         /// <summary>
+        ///     The factory used to create <see cref="IProgressReport{TMessage}"/> instances.
+        /// </summary>
+        protected readonly IProgressReportFactory<TMessage> ProgressReportFactory;
+
+        /// <summary>
         ///     Keeps a list of the operations in progress and not completed.
         /// </summary>
-        private readonly List<ProgressInfo> activeChildProgressInfos = new List<ProgressInfo>();
+        private readonly List<ProgressInfo<TMessage>> activeChildProgressInfos = new List<ProgressInfo<TMessage>>();
 
         /// <summary>
         ///     Keeps a list of the operations in progress (both completed and not completed).
         /// </summary>
-        private readonly List<ProgressInfo> childProgressInfos = new List<ProgressInfo>();
+        private readonly List<ProgressInfo<TMessage>> childProgressInfos = new List<ProgressInfo<TMessage>>();
 
         /// <summary>
         ///     <see langword="true"/> if the <see cref="activeChildProgressInfos"/> list should be kept ordered with the most recently updated child progress on the end of the list.
@@ -31,14 +40,20 @@
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="HierarchicalProgressBase"/> class.
+        ///     Initializes a new instance of the <see cref="HierarchicalProgressBase{TMessage}"/> class.
         /// </summary>
         /// <param name="keepProgressListOrdered">
         ///     <see langword="true"/> if the <see cref="activeChildProgressInfos"/> list should be kept ordered with the most recently updated child progress on the end of the list.
         /// </param>
-        protected HierarchicalProgressBase(bool keepProgressListOrdered)
+        /// <param name="progressReportFactory">
+        ///     The factory used to create <see cref="IProgressReport{TMessage}"/> instances.
+        /// </param>
+        protected HierarchicalProgressBase(
+            bool keepProgressListOrdered,
+            IProgressReportFactory<TMessage> progressReportFactory)
         {
             this.keepProgressListOrdered = keepProgressListOrdered;
+            this.ProgressReportFactory = progressReportFactory;
         }
 
         #endregion
@@ -48,7 +63,7 @@
         /// <summary>
         ///     Gets a list of the operations in progress and not completed.
         /// </summary>
-        public List<ProgressInfo> ActiveChildProgressInfos
+        public List<ProgressInfo<TMessage>> ActiveChildProgressInfos
         {
             get
             {
@@ -69,10 +84,10 @@
         /// <returns>
         ///     A <see cref="IProgress{IProgressReport}"/> object which allows manipulation of the progress of the operation.
         /// </returns>
-        public virtual IHierarchicalProgress<IProgressReport> CreateProgress(bool blocksUi)
+        public virtual IHierarchicalProgress<IProgressReport<TMessage>> CreateProgress(bool blocksUi)
         {
-            var childProgress = new HierarchicalProgress(this.OnReport, this.UnregisterProgress);
-            var progressInfo = new ProgressInfo(childProgress, blocksUi);
+            var childProgress = new HierarchicalProgress<TMessage>(this.OnReport, this.UnregisterProgress, this.ProgressReportFactory);
+            var progressInfo = new ProgressInfo<TMessage>(childProgress, blocksUi);
             this.childProgressInfos.Add(progressInfo);
             this.activeChildProgressInfos.Add(progressInfo);
             return childProgress;
@@ -96,11 +111,11 @@
         ///     Recomputes the aggregate status from the child operations currently in progress.
         /// </summary>
         /// <returns>
-        ///     The aggregate <see cref="IProgressReport"/> instance representing the state of this progress instance.
+        ///     The aggregate <see cref="IProgressReport{TMessage}"/> instance representing the state of this progress instance.
         /// </returns>
-        protected IProgressReport CalculateAggregateProgressReport()
+        protected IProgressReport<TMessage> CalculateAggregateProgressReport()
         {
-            IProgressReport aggregateProgressReport = null;
+            IProgressReport<TMessage> aggregateProgressReport = null;
 
             if (this.activeChildProgressInfos.Any())
             {
@@ -125,11 +140,11 @@
                              select numerator / denominator)
                                 .Sum();
 
-                        aggregateProgressReport = new ProgressReport(message, progressValue, 1.0, aggregateState);
+                        aggregateProgressReport = this.ProgressReportFactory.Create(message, progressValue, 1.0, aggregateState);
                     }
                     else
                     {
-                        aggregateProgressReport = new ProgressReport(message, aggregateState);
+                        aggregateProgressReport = this.ProgressReportFactory.Create(message, aggregateState);
                     }
                 }
             }
@@ -163,8 +178,8 @@
         ///     The new value.
         /// </param>
         protected void OnReport(
-            IProgress<IProgressReport> sender, 
-            IProgressReport value)
+            IProgress<IProgressReport<TMessage>> sender,
+            IProgressReport<TMessage> value)
         {
             if (sender == null)
             {
@@ -176,7 +191,7 @@
                 throw new ArgumentNullException("value");
             }
 
-            ProgressInfo childProgressInfo;
+            ProgressInfo<TMessage> childProgressInfo;
 
             // The OnReport method is called from the message queue. It is possible that the progress operation has already been unregistered.
             if (this.TryGetOperationInfo(sender, out childProgressInfo))
@@ -202,20 +217,20 @@
         protected abstract void OnStatusChanged();
 
         /// <summary>
-        ///     Tries to retrieve the <see cref="ProgressInfo"/> instance that represents <paramref name="childProgress"/>.
+        ///     Tries to retrieve the <see cref="ProgressInfo{TMessage}"/> instance that represents <paramref name="childProgress"/>.
         /// </summary>
         /// <param name="childProgress">
         ///     The progress instance to retrieve information for.
         /// </param>
         /// <param name="info">
-        ///     The variable which will receive the <see cref="ProgressInfo"/> in case the <paramref name="childProgress"/> instance is found.
+        ///     The variable which will receive the <see cref="ProgressInfo{TMessage}"/> in case the <paramref name="childProgress"/> instance is found.
         /// </param>
         /// <returns>
         ///     <see langword="true"/> in case the <paramref name="childProgress"/> is known.
         /// </returns>
         protected bool TryGetOperationInfo(
-            IProgress<IProgressReport> childProgress, 
-            out ProgressInfo info)
+            IProgress<IProgressReport<TMessage>> childProgress,
+            out ProgressInfo<TMessage> info)
         {
             info = this.childProgressInfos.FirstOrDefault(o => object.ReferenceEquals(childProgress, o.Progress));
 
@@ -228,9 +243,9 @@
         /// <param name="childProgress">
         ///     The <see cref="IProgress{T}"/> object previously registered through <see cref="CreateProgress"/>.
         /// </param>
-        private void UnregisterProgress(IProgress<IProgressReport> childProgress)
+        private void UnregisterProgress(IProgress<IProgressReport<TMessage>> childProgress)
         {
-            ProgressInfo childProgressInfo;
+            ProgressInfo<TMessage> childProgressInfo;
             if (this.TryGetOperationInfo(childProgress, out childProgressInfo))
             {
                 this.activeChildProgressInfos.Remove(childProgressInfo);

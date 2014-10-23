@@ -47,11 +47,16 @@
     <Compile Include="IHierarchicalProgress.cs" />
     <Compile Include="IProgressProvider.cs" />
     <Compile Include="IProgressReport.cs" />
+    <Compile Include="IProgressReport.generic.cs" />
+    <Compile Include="IProgressReportFactory.cs" />
+    <Compile Include="MessageHelper.cs" />
     <Compile Include="Progress.cs" />
     <Compile Include="ProgressExtensions.cs" />
     <Compile Include="ProgressInfo.cs" />
     <Compile Include="ProgressProviderBase.cs" />
+    <Compile Include="ProgressProviderBase.generic.cs" />
     <Compile Include="ProgressReport.cs" />
+    <Compile Include="ProgressReport.generic.cs" />
     <Compile Include="ProgressState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

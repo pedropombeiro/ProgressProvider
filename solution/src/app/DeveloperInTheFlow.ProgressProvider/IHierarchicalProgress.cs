@@ -10,7 +10,7 @@
     ///   Disposing this object will unregister from its source.
     /// </remarks>
     /// <typeparam name="T">The type of progress update value.</typeparam>
-    public interface IHierarchicalProgress<in T> : IProgress<T>, 
+    public interface IHierarchicalProgress<in T> : IProgress<T>,
                                                    IDisposable
     {
         #region Public Properties

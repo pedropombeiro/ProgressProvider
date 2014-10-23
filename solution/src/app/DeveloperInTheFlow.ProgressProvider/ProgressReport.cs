@@ -5,7 +5,9 @@
     /// <summary>
     ///     Implements a status report for a long-running operation to <see cref="IProgress{T}"/>.
     /// </summary>
-    public class ProgressReport : IProgressReport
+    [Obsolete("Use generic version of IProgressReport")]
+    public class ProgressReport : ProgressReport<string>,
+                                  IProgressReport
     {
         #region Constructors and Destructors
 
@@ -13,9 +15,8 @@
         ///     Initializes a new instance of the <see cref="ProgressReport"/> class.
         /// </summary>
         public ProgressReport()
+            : base(string.Empty)
         {
-            this.Message = string.Empty;
-            this.State = ProgressState.Indeterminate;
         }
 
         /// <summary>
@@ -25,7 +26,7 @@
         ///     The message describing the status of the long-running operation.
         /// </param>
         public ProgressReport(string message)
-            : this(message, ProgressState.Indeterminate)
+            : base(message)
         {
         }
 
@@ -36,7 +37,7 @@
         ///     The state of the long-running operation.
         /// </param>
         public ProgressReport(ProgressState state)
-            : this(string.Empty, state)
+            : base(state)
         {
         }
 
@@ -50,16 +51,10 @@
         ///     The state of the long-running operation.
         /// </param>
         public ProgressReport(
-            string message, 
+            string message,
             ProgressState state)
+            : base(message, state)
         {
-            if (message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
-
-            this.Message = message;
-            this.State = state;
         }
 
         /// <summary>
@@ -75,10 +70,10 @@
         ///     The maximum progress value.
         /// </param>
         public ProgressReport(
-            string message, 
-            double progressValue, 
+            string message,
+            double progressValue,
             double progressMaximumValue)
-            : this(message, progressValue, progressMaximumValue, ProgressState.Normal)
+            : base(message, progressValue, progressMaximumValue)
         {
         }
 
@@ -98,46 +93,13 @@
         ///     The state of the long-running operation.
         /// </param>
         public ProgressReport(
-            string message, 
-            double progressValue, 
-            double progressMaximumValue, 
+            string message,
+            double progressValue,
+            double progressMaximumValue,
             ProgressState state)
-            : this(message, state)
+            : base(message, progressValue, progressMaximumValue, state)
         {
-            if (double.IsNaN(progressValue) || double.IsInfinity(progressValue))
-            {
-                throw new ArgumentException();
-            }
-
-            this.Message = message;
-            this.State = state;
-            this.ProgressValue = progressValue;
-            this.ProgressMaximumValue = progressMaximumValue;
         }
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        ///     Gets the message describing the status of the long-running operation.
-        /// </summary>
-        public string Message { get; private set; }
-
-        /// <summary>
-        ///     Gets the maximum progress value. Used when <see cref="IProgressReport.ProgressValue"/> is defined.
-        /// </summary>
-        public double ProgressMaximumValue { get; private set; }
-
-        /// <summary>
-        ///     Gets the current progress value from [0, <see cref="ProgressMaximumValue"/>]. <see langword="null"/> if the <see cref="IProgressReport.State"/> is <see cref="ProgressState.Indeterminate"/>.
-        /// </summary>
-        public double? ProgressValue { get; private set; }
-
-        /// <summary>
-        ///     Gets the state of the long-running operation.
-        /// </summary>
-        public ProgressState State { get; private set; }
 
         #endregion
     }

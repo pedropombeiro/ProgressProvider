@@ -8,21 +8,21 @@
         /// <summary>
         ///     No operation is in progress.
         /// </summary>
-        None, 
+        None,
 
         /// <summary>
         ///     The operation in progress is running normally and the length is undetermined.
         /// </summary>
-        Indeterminate, 
+        Indeterminate,
 
         /// <summary>
         ///     The operation in progress is running normally and the length is determined.
         /// </summary>
-        Normal, 
+        Normal,
 
         /// <summary>
         ///     The operation in progress has experienced an error.
         /// </summary>
-        Error, 
+        Error,
     }
 }

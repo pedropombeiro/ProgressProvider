@@ -5,7 +5,11 @@
     /// <summary>
     ///     Represents additional information about a <see cref="HierarchicalProgress"/> instance.
     /// </summary>
-    public class ProgressInfo
+    /// <typeparam name="TMessage">
+    ///     The message type.
+    /// </typeparam>
+    public class ProgressInfo<TMessage>
+        where TMessage : class
     {
         #region Fields
 
@@ -19,7 +23,7 @@
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ProgressInfo"/> class.
+        ///     Initializes a new instance of the <see cref="ProgressInfo{TMessage}"/> class.
         /// </summary>
         /// <param name="progress">
         ///     The progress operation represented by this information object.
@@ -28,7 +32,7 @@
         ///     <see langword="true"/> if the operation is supposed to block the UI from user interaction.
         /// </param>
         public ProgressInfo(
-            HierarchicalProgress progress, 
+            HierarchicalProgress<TMessage> progress,
             bool blocksUi)
         {
             this.Progress = progress;
@@ -53,12 +57,12 @@
         /// <summary>
         ///     Gets or sets the last reported status.
         /// </summary>
-        public IProgressReport LastReportedStatus { get; set; }
+        public IProgressReport<TMessage> LastReportedStatus { get; set; }
 
         /// <summary>
         ///     Gets the progress operation represented by this information object.
         /// </summary>
-        public HierarchicalProgress Progress { get; private set; }
+        public HierarchicalProgress<TMessage> Progress { get; private set; }
 
         #endregion
     }
