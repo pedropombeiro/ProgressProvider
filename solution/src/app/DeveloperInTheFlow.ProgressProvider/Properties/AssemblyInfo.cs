@@ -10,7 +10,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Pedro Pombeiro")]
 [assembly: AssemblyProduct("DeveloperInTheFlow.ProgressProvider")]
-[assembly: AssemblyCopyright("Copyright © Pedro Pombeiro 2013")]
+[assembly: AssemblyCopyright("Copyright © Pedro Pombeiro 2013-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
@@ -26,5 +26,5 @@ using System.Resources;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.4")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.12")]
+[assembly: AssemblyFileVersion("1.0.12.0")]
