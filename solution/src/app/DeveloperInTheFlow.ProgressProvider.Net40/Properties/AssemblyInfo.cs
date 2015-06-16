@@ -4,13 +4,12 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-
 [assembly: AssemblyTitle("DeveloperInTheFlow.ProgressProvider")]
 [assembly: AssemblyDescription("Provides a hierarchical implementation of the System.IProgress&lt;T&gt; interface, allowing for more complex scenarios with multiple parallel operations being reported.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Pedro Pombeiro")]
 [assembly: AssemblyProduct("DeveloperInTheFlow.ProgressProvider")]
-[assembly: AssemblyCopyright("Copyright © Pedro Pombeiro 2013-2014")]
+[assembly: AssemblyCopyright("Copyright © Pedro Pombeiro 2013-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
@@ -25,6 +24,5 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-
-[assembly: AssemblyVersion("1.0.12")]
-[assembly: AssemblyFileVersion("1.0.12.0")]
+[assembly: AssemblyVersion("1.0.15")]
+[assembly: AssemblyFileVersion("1.0.15.0")]

@@ -18,15 +18,12 @@
         /// <param name="message">
         ///     The message of the updated progress.
         /// </param>
-        /// <typeparam name="TMessage">
-        ///     The message type.
-        /// </typeparam>
-        public static void Report<TMessage>(
-            this IProgress<IProgressReport<TMessage>> progress, 
-            TMessage message)
-            where TMessage : class
+        [Obsolete("Use generic version of IProgressReport")]
+        public static void Report(
+            this IProgress<IProgressReport> progress,
+            string message)
         {
-            progress.Report(new ProgressReport<TMessage>(message));
+            progress.Report(new ProgressReport(message));
         }
 
         /// <summary>
@@ -44,17 +41,14 @@
         /// <param name="progressMaximumValue">
         ///     The maximum progress value.
         /// </param>
-        /// <typeparam name="TMessage">
-        ///     The message type.
-        /// </typeparam>
-        public static void Report<TMessage>(
-            this IProgress<IProgressReport<TMessage>> progress, 
-            TMessage message, 
-            double progressValue, 
+        [Obsolete("Use generic version of IProgressReport")]
+        public static void Report(
+            this IProgress<IProgressReport> progress,
+            string message,
+            double progressValue,
             double progressMaximumValue)
-            where TMessage : class
         {
-            progress.Report(new ProgressReport<TMessage>(message, progressValue, progressMaximumValue));
+            progress.Report(new ProgressReport(message, progressValue, progressMaximumValue));
         }
 
         /// <summary>
@@ -75,18 +69,15 @@
         /// <param name="state">
         ///     The state of the long-running operation.
         /// </param>
-        /// <typeparam name="TMessage">
-        ///     The message type.
-        /// </typeparam>
-        public static void Report<TMessage>(
-            this IProgress<IProgressReport<TMessage>> progress, 
-            TMessage message, 
-            double progressValue, 
-            double progressMaximumValue, 
+        [Obsolete("Use generic version of IProgressReport")]
+        public static void Report(
+            this IProgress<IProgressReport> progress,
+            string message,
+            double progressValue,
+            double progressMaximumValue,
             ProgressState state)
-            where TMessage : class
         {
-            progress.Report(new ProgressReport<TMessage>(message, progressValue, progressMaximumValue, state));
+            progress.Report(new ProgressReport(message, progressValue, progressMaximumValue, state));
         }
 
         /// <summary>
@@ -101,16 +92,13 @@
         /// <param name="state">
         ///     The state of the long-running operation.
         /// </param>
-        /// <typeparam name="TMessage">
-        ///     The message type.
-        /// </typeparam>
-        public static void Report<TMessage>(
-            this IProgress<IProgressReport<TMessage>> progress, 
-            TMessage message, 
+        [Obsolete("Use generic version of IProgressReport")]
+        public static void Report(
+            this IProgress<IProgressReport> progress,
+            string message,
             ProgressState state)
-            where TMessage : class
         {
-            progress.Report(new ProgressReport<TMessage>(message, state));
+            progress.Report(new ProgressReport(message, state));
         }
 
         /// <summary>
@@ -119,13 +107,10 @@
         /// <param name="progress">
         ///     The object being extended.
         /// </param>
-        /// <typeparam name="TMessage">
-        ///     The message type.
-        /// </typeparam>
-        public static void ReportError<TMessage>(this IProgress<IProgressReport<TMessage>> progress)
-            where TMessage : class
+        [Obsolete("Use generic version of IProgressReport")]
+        public static void ReportError(this IProgress<IProgressReport> progress)
         {
-            progress.Report(new ProgressReport<TMessage>(ProgressState.Error));
+            progress.Report(new ProgressReport(ProgressState.Error));
         }
 
         #endregion

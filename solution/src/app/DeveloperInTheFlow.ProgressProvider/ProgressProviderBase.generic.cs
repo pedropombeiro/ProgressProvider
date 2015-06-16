@@ -10,7 +10,7 @@
     /// <typeparam name="TMessage">
     ///     The message type.
     /// </typeparam>
-    public abstract class ProgressProviderBase<TMessage> : HierarchicalProgressBase<TMessage>,
+    public abstract class ProgressProviderBase<TMessage> : HierarchicalProgressBase<TMessage>, 
                                                            IProgressProvider<IProgressReport<TMessage>>
         where TMessage : class
     {
@@ -25,7 +25,7 @@
         /// <param name="progressReportFactory">
         ///     The factory used to create <see cref="IProgressReport{TMessage}"/> instances.
         /// </param>
-        protected ProgressProviderBase(bool keepProgressListOrdered,
+        protected ProgressProviderBase(bool keepProgressListOrdered, 
                                        IProgressReportFactory<TMessage> progressReportFactory)
             : base(keepProgressListOrdered, progressReportFactory)
         {
@@ -110,7 +110,7 @@
         #region Methods
 
         /// <summary>
-        ///     Recomputes the aggregate <see cref="Status"/> from the operations currently in progress.
+        ///     Re-computes the aggregate <see cref="Status"/> from the operations currently in progress.
         /// </summary>
         protected override void OnStatusChanged()
         {
@@ -130,16 +130,16 @@
             #region Public Methods and Operators
 
             public IProgressReport<TMessage> Create(
-                TMessage message,
-                double progressValue,
-                double progressMaximumValue,
+                TMessage message, 
+                double progressValue, 
+                double progressMaximumValue, 
                 ProgressState state)
             {
                 return new ProgressReport<TMessage>(message, progressValue, progressMaximumValue, state);
             }
 
             public IProgressReport<TMessage> Create(
-                TMessage message,
+                TMessage message, 
                 ProgressState state)
             {
                 return new ProgressReport<TMessage>(message, state);

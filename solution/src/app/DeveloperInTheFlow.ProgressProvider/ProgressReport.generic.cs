@@ -25,17 +25,6 @@
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProgressReport{TMessage}"/> class.
         /// </summary>
-        /// <param name="message">
-        ///     The message describing the status of the long-running operation.
-        /// </param>
-        public ProgressReport(TMessage message)
-            : this(message, ProgressState.Indeterminate)
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ProgressReport{TMessage}"/> class.
-        /// </summary>
         /// <param name="state">
         ///     The state of the long-running operation.
         /// </param>
@@ -54,31 +43,11 @@
         ///     The state of the long-running operation.
         /// </param>
         public ProgressReport(
-            TMessage message,
-            ProgressState state)
+            TMessage message, 
+            ProgressState state = ProgressState.Indeterminate)
         {
             this.Message = message;
             this.State = state;
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ProgressReport{TMessage}"/> class.
-        /// </summary>
-        /// <param name="message">
-        ///     The message describing the status of the long-running operation.
-        /// </param>
-        /// <param name="progressValue">
-        ///     The current progress from [0, <paramref name="progressMaximumValue"/>].
-        /// </param>
-        /// <param name="progressMaximumValue">
-        ///     The maximum progress value.
-        /// </param>
-        public ProgressReport(
-            TMessage message,
-            double progressValue,
-            double progressMaximumValue)
-            : this(message, progressValue, progressMaximumValue, ProgressState.Normal)
-        {
         }
 
         /// <summary>
@@ -97,10 +66,10 @@
         ///     The state of the long-running operation.
         /// </param>
         public ProgressReport(
-            TMessage message,
-            double progressValue,
-            double progressMaximumValue,
-            ProgressState state)
+            TMessage message, 
+            double progressValue, 
+            double progressMaximumValue, 
+            ProgressState state = ProgressState.Normal)
             : this(message, state)
         {
             if (double.IsNaN(progressValue) || double.IsInfinity(progressValue))

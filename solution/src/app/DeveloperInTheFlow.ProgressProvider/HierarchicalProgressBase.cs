@@ -49,7 +49,7 @@
         ///     The factory used to create <see cref="IProgressReport{TMessage}"/> instances.
         /// </param>
         protected HierarchicalProgressBase(
-            bool keepProgressListOrdered,
+            bool keepProgressListOrdered, 
             IProgressReportFactory<TMessage> progressReportFactory)
         {
             this.keepProgressListOrdered = keepProgressListOrdered;
@@ -108,7 +108,7 @@
         #region Methods
 
         /// <summary>
-        ///     Recomputes the aggregate status from the child operations currently in progress.
+        ///     Re-computes the aggregate status from the child operations currently in progress.
         /// </summary>
         /// <returns>
         ///     The aggregate <see cref="IProgressReport{TMessage}"/> instance representing the state of this progress instance.
@@ -169,6 +169,11 @@
         }
 
         /// <summary>
+        ///     Called whenever the status of the progress operation needs to be recomputed.
+        /// </summary>
+        protected abstract void OnStatusChanged();
+
+        /// <summary>
         ///     Handles progress reports.
         /// </summary>
         /// <param name="sender">
@@ -177,8 +182,8 @@
         /// <param name="value">
         ///     The new value.
         /// </param>
-        protected void OnReport(
-            IProgress<IProgressReport<TMessage>> sender,
+        private void OnReport(
+            IProgress<IProgressReport<TMessage>> sender, 
             IProgressReport<TMessage> value)
         {
             if (sender == null)
@@ -212,11 +217,6 @@
         }
 
         /// <summary>
-        ///     Called whenever the status of the progress operation needs to be recomputed.
-        /// </summary>
-        protected abstract void OnStatusChanged();
-
-        /// <summary>
         ///     Tries to retrieve the <see cref="ProgressInfo{TMessage}"/> instance that represents <paramref name="childProgress"/>.
         /// </summary>
         /// <param name="childProgress">
@@ -228,8 +228,8 @@
         /// <returns>
         ///     <see langword="true"/> in case the <paramref name="childProgress"/> is known.
         /// </returns>
-        protected bool TryGetOperationInfo(
-            IProgress<IProgressReport<TMessage>> childProgress,
+        private bool TryGetOperationInfo(
+            IProgress<IProgressReport<TMessage>> childProgress, 
             out ProgressInfo<TMessage> info)
         {
             info = this.childProgressInfos.FirstOrDefault(o => object.ReferenceEquals(childProgress, o.Progress));
