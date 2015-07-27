@@ -3,6 +3,9 @@
     /// <summary>
     ///     Contains helper methods to work with generic messages.
     /// </summary>
+    /// <typeparam name="TMessage">
+    ///     Specifies the type of the progress report value.
+    /// </typeparam>
     public static class MessageHelper<TMessage>
         where TMessage : class
     {

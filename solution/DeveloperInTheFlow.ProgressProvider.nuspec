@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>DeveloperInTheFlow.ProgressProvider</id>
+    <version>$version$</version>
+    <title>DeveloperInTheFlow.ProgressProvider</title>
+    <authors>Pedro Pombeiro</authors>
+    <owners>Pedro Pombeiro</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides a hierarchical implementation of the System.IProgress&lt;T&gt; interface, allowing for more complex scenarios with multiple parallel operations being reported.</description>
+    <releaseNotes>Support .NET Framework 4.6.</releaseNotes>
+    <copyright>Copyright © Pedro Pombeiro 2013-2015</copyright>
+    <tags>IProgress TPL</tags>
+    <dependencies>
+      <group targetFramework="net4">
+        <dependency id="Microsoft.Bcl" version="1.1.9" />
+      </group>
+	  <group targetFramework="net46">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="src\app\DeveloperInTheFlow.ProgressProvider.Net40\bin\Release\DeveloperInTheFlow.ProgressProvider.Net40.dll" target="lib\net40" />
+    <file src="src\app\DeveloperInTheFlow.ProgressProvider\bin\Release\DeveloperInTheFlow.ProgressProvider.dll" target="lib\net46" />
+  </files>
+</package>

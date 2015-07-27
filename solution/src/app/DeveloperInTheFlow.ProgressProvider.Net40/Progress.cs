@@ -3,13 +3,15 @@
     using System;
 
     /// <summary>
-    /// Provides an IProgress{T} that invokes callbacks for each reported progress value.
+    ///     Provides an IProgress{T} that invokes callbacks for each reported progress value.
     /// </summary>
-    /// <typeparam name="T">Specifies the type of the progress report value.</typeparam>
+    /// <typeparam name="T">
+    ///     Specifies the type of the progress report value.
+    /// </typeparam>
     /// <remarks>
     ///     This class is a copy of System.Progress{T} in .NET 4.5 and should eventually be replaced by it.
     /// </remarks>
-    public class Progress<T> : IProgress<T>
+    public sealed class Progress<T> : IProgress<T>
     {
         #region Fields
 
@@ -62,7 +64,7 @@
         /// Reports a progress change.
         /// </summary>
         /// <param name="value">The value of the updated progress.</param>
-        protected virtual void OnReport(T value)
+        private void OnReport(T value)
         {
             this.handler(value);
         }

@@ -3,7 +3,7 @@
     using System.Linq;
 
     /// <summary>
-    ///     Represents additional information about a <see cref="HierarchicalProgress"/> instance.
+    ///     Represents additional information about a <see cref="HierarchicalProgress{TMessage}"/> instance.
     /// </summary>
     /// <typeparam name="TMessage">
     ///     The message type.
