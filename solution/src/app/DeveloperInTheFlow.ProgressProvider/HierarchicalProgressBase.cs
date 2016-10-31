@@ -117,25 +117,28 @@
         {
             IProgressReport<TMessage> aggregateProgressReport = null;
 
-            if (this.activeChildProgressInfos.Any())
+            var activeProgressInfos = this.activeChildProgressInfos.ToArray();
+
+            if (activeProgressInfos.Any())
             {
-                if (this.childProgressInfos.All(x => x.LastReportedStatus != null))
+                var progressInfos = this.childProgressInfos.ToArray();
+                if (progressInfos.All(x => x.LastReportedStatus != null))
                 {
-                    var allActiveHaveProgressValue = this.activeChildProgressInfos.All(x => x.LastReportedStatus.ProgressValue.HasValue);
-                    var aggregateState = this.childProgressInfos.Max(x => x.LastReportedStatus.State);
-                    var message = this.activeChildProgressInfos.Last().LastReportedStatus.Message;
+                    var allActiveHaveProgressValue = activeProgressInfos.All(x => x.LastReportedStatus.ProgressValue.HasValue);
+                    var aggregateState = progressInfos.Max(x => x.LastReportedStatus.State);
+                    var message = activeProgressInfos.Last().LastReportedStatus.Message;
 
 // ReSharper disable once PossibleInvalidOperationException
                     if (allActiveHaveProgressValue)
                     {
-                        var denominator = this.childProgressInfos.Sum(x => x.LastReportedStatus.ProgressMaximumValue);
+                        var denominator = progressInfos.Sum(x => x.LastReportedStatus.ProgressMaximumValue);
                         var progressValue =
-                            (from childProgressInfo in this.childProgressInfos
+                            (from childProgressInfo in progressInfos
                              let status = childProgressInfo.LastReportedStatus
                              let maximumValue = status.ProgressMaximumValue
-                             let isActive = this.activeChildProgressInfos.Contains(childProgressInfo)
+                             let isActive = activeProgressInfos.Contains(childProgressInfo)
                              let numerator = (isActive
-                                                  ? status.ProgressValue.Value
+                                                  ? status.ProgressValue ?? maximumValue
                                                   : maximumValue)
                              select numerator / denominator)
                                 .Sum();
