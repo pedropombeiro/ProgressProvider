@@ -138,7 +138,7 @@
                              let maximumValue = status.ProgressMaximumValue
                              let isActive = activeProgressInfos.Contains(childProgressInfo)
                              let numerator = (isActive
-                                                  ? status.ProgressValue.Value
+                                                  ? status.ProgressValue ?? maximumValue
                                                   : maximumValue)
                              select numerator / denominator)
                                 .Sum();
