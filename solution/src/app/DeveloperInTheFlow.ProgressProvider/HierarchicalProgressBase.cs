@@ -35,6 +35,13 @@
         /// </summary>
         private readonly bool keepProgressListOrdered;
 
+        /// <summary>
+        ///     Object to lock access to child progress info.
+        /// </summary>
+        private readonly object progressInfoLock = new object();
+
+        private readonly IEnumerable<ProgressInfo<TMessage>> readOnlyActiveChildProgressInfos;
+
         #endregion
 
         #region Constructors and Destructors
@@ -49,11 +56,12 @@
         ///     The factory used to create <see cref="IProgressReport{TMessage}"/> instances.
         /// </param>
         protected HierarchicalProgressBase(
-            bool keepProgressListOrdered, 
+            bool keepProgressListOrdered,
             IProgressReportFactory<TMessage> progressReportFactory)
         {
             this.keepProgressListOrdered = keepProgressListOrdered;
             this.ProgressReportFactory = progressReportFactory;
+            this.readOnlyActiveChildProgressInfos = this.activeChildProgressInfos.AsEnumerable();
         }
 
         #endregion
@@ -63,11 +71,11 @@
         /// <summary>
         ///     Gets a list of the operations in progress and not completed.
         /// </summary>
-        public List<ProgressInfo<TMessage>> ActiveChildProgressInfos
+        public IEnumerable<ProgressInfo<TMessage>> ActiveChildProgressInfos
         {
             get
             {
-                return this.activeChildProgressInfos;
+                return this.readOnlyActiveChildProgressInfos;
             }
         }
 
@@ -88,8 +96,12 @@
         {
             var childProgress = new HierarchicalProgress<TMessage>(this.OnReport, this.UnregisterProgress, this.ProgressReportFactory);
             var progressInfo = new ProgressInfo<TMessage>(childProgress, blocksUi);
-            this.childProgressInfos.Add(progressInfo);
-            this.activeChildProgressInfos.Add(progressInfo);
+
+            lock (this.progressInfoLock)
+            {
+                this.childProgressInfos.Add(progressInfo);
+                this.activeChildProgressInfos.Add(progressInfo);
+            }
             return childProgress;
         }
 
@@ -186,7 +198,7 @@
         ///     The new value.
         /// </param>
         private void OnReport(
-            IProgress<IProgressReport<TMessage>> sender, 
+            IProgress<IProgressReport<TMessage>> sender,
             IProgressReport<TMessage> value)
         {
             if (sender == null)
@@ -204,18 +216,21 @@
             // The OnReport method is called from the message queue. It is possible that the progress operation has already been unregistered.
             if (this.TryGetOperationInfo(sender, out childProgressInfo))
             {
-                // Put sender at the top of the pile
-                if (this.keepProgressListOrdered)
+                lock (this.progressInfoLock)
                 {
-                    if (this.activeChildProgressInfos.Remove(childProgressInfo))
+                    // Put sender at the top of the pile
+                    if (this.keepProgressListOrdered)
                     {
-                        this.activeChildProgressInfos.Add(childProgressInfo);
+                        if (this.activeChildProgressInfos.Remove(childProgressInfo))
+                        {
+                            this.activeChildProgressInfos.Add(childProgressInfo);
+                        }
                     }
+
+                    childProgressInfo.LastReportedStatus = value;
+
+                    this.OnStatusChanged();
                 }
-
-                childProgressInfo.LastReportedStatus = value;
-
-                this.OnStatusChanged();
             }
         }
 
@@ -232,7 +247,7 @@
         ///     <see langword="true"/> in case the <paramref name="childProgress"/> is known.
         /// </returns>
         private bool TryGetOperationInfo(
-            IProgress<IProgressReport<TMessage>> childProgress, 
+            IProgress<IProgressReport<TMessage>> childProgress,
             out ProgressInfo<TMessage> info)
         {
             info = this.childProgressInfos.FirstOrDefault(o => object.ReferenceEquals(childProgress, o.Progress));
@@ -251,15 +266,18 @@
             ProgressInfo<TMessage> childProgressInfo;
             if (this.TryGetOperationInfo(childProgress, out childProgressInfo))
             {
-                this.activeChildProgressInfos.Remove(childProgressInfo);
-
-                if (!this.activeChildProgressInfos.Any())
+                lock (this.progressInfoLock)
                 {
-                    // If this was the last active progress, then we can clear all the operations we've been tracking.
-                    this.childProgressInfos.Clear();
-                }
+                    this.activeChildProgressInfos.Remove(childProgressInfo);
 
-                this.OnStatusChanged();
+                    if (!this.activeChildProgressInfos.Any())
+                    {
+                        // If this was the last active progress, then we can clear all the operations we've been tracking.
+                        this.childProgressInfos.Clear();
+                    }
+
+                    this.OnStatusChanged();
+                }
             }
         }
 
